@@ -5,6 +5,8 @@ import fs from "fs";
 
 const RESULTS_FILE_NAME = "results.json";
 
+const cache = new Set();
+
 const resultJson = {
   results: [],
 };
@@ -21,6 +23,10 @@ const run = async () => {
 
 const getImages = async (sourceUrl, limit, currentDepth) => {
   try {
+    if (cache.has(sourceUrl)) {
+      return;
+    }
+    cache.add(sourceUrl);
     const res = await fetch(sourceUrl);
     const html = await res.text();
     const $ = load(html);
